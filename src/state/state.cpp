@@ -13,7 +13,16 @@
  */
 int State::evaluate(){
   // [TODO] design your own evaluation function
-  return 0;
+  int res_state = 0; //result state
+  auto my_board = board.board[player];
+  auto op_board = board.board[1-player];
+  for(int i=0; i<BOARD_H; i++){
+    for(int j=0; j<BOARD_W; j++){
+      res_state += 100 * piece_value[my_board[i][j]];
+      res_state -= 100 * piece_value[op_board[i][j]];
+    }
+  }
+  return res_state;
 }
 
 
@@ -207,7 +216,7 @@ void State::get_legal_actions(){
       }
     }
   }
-  std::cout << "\n";
+  //std::cout << "\n";
   this->legal_actions = all_actions;
 }
 

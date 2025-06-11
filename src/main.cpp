@@ -417,8 +417,8 @@ int main(int argc, char** argv) {
     std::cout << step << " step" << std::endl;
     log << step << " step" << std::endl;
     data = game.encode_output();
-    std::cout << data << std::endl;
-    log << data << std::endl;
+//    std::cout << data << std::endl;
+//    log << data << std::endl;
     
     data = game.encode_state();
     std::ofstream fout(file_state);
