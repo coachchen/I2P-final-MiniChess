@@ -1,17 +1,16 @@
-#include <iostream>
 #include <cstdlib>
 #include "../state/state.hpp"
-#include "./minimax.hpp"
+#include "./alphabeta.hpp"
 
 
 /**
- * @brief Get a legal action by minimax
+ * @brief Get a legal action by alpha-beta pruning
  * 
  * @param state Now state
  * @param depth this is the search depth
  * @return Move 
  */
-int minimax(State state, int depth, int max_turn){
+int alphabeta(State state, int alpha, int beta, int depth, int max_turn){
   if(depth == 0) return state.evaluate();
   if(!state.legal_actions.size())
     state.get_legal_actions();
@@ -21,7 +20,9 @@ int minimax(State state, int depth, int max_turn){
     auto actions = state.legal_actions;
     for(Move i:actions){
       State* newstate = state.next_state(i);
-      max = std::max(max, minimax(*newstate, depth-1, 0));
+      max = std::max(max, alphabeta(*newstate, alpha, beta, depth-1, 0));
+      if(max>=beta) break;
+      alpha = std::max(alpha, max);
     }
     return max;
   }
@@ -30,12 +31,14 @@ int minimax(State state, int depth, int max_turn){
     auto actions = state.legal_actions;
     for(Move i:actions){
       State* newstate = state.next_state(i);
-      min = std::min(min, minimax(*newstate, depth-1, 1));
+      min = std::min(min, alphabeta(*newstate, alpha, beta, depth-1, 1));
+      if(min<=alpha) break;
+      min = std::min(min, beta);
     }
     return min;
   }
 }
-Move Minimax::get_move(State *state, int depth){
+Move Alphabeta::get_move(State *state, int depth){
   if(!state->legal_actions.size())
     state->get_legal_actions();  
   auto actions = state->legal_actions;
@@ -44,7 +47,7 @@ Move Minimax::get_move(State *state, int depth){
     int maxscore = -100000;
     for(Move i:actions){
       State* newstate = state->next_state(i);
-      int score = minimax(*newstate, depth-1, 0);
+      int score = alphabeta(*newstate, -100000, 100000, depth-1, 0);
       if(score>=maxscore){
         maxscore = score;
         move = i;
@@ -56,7 +59,7 @@ Move Minimax::get_move(State *state, int depth){
     int minscore = 100000;
     for(Move i:actions){
       State* newstate = state->next_state(i);
-      int score = minimax(*newstate, depth-1, 1);
+      int score = alphabeta(*newstate, -100000, 100000, depth-1, 1);
       if(score<=minscore){
         minscore = score;
         move = i;

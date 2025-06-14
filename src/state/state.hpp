@@ -39,7 +39,7 @@ enum GameState {
   NONE
 };
 
-const static int piece_value[7] = {0, 1, 5, 3, 3, 8, 20};
+
 class State{
   public:
     //You may want to add more property for a state
